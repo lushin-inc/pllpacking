@@ -131,6 +131,9 @@ main.wide{margin-left:0}
 .box svg{width:16px;height:16px;opacity:0;transform:scale(.6);transition:.15s}
 .it.on .box{background:var(--accent);border-color:var(--accent);color:var(--check)}
 .it.on .box svg{opacity:1;transform:scale(1)}
+.qty{flex:none;min-width:52px;padding-top:2px;font-size:.8rem;font-weight:700;
+  color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.it.on .qty{opacity:.4}
 .it .txt{flex:1;min-width:0}
 .it .t{font-size:1.04rem;font-weight:500;transition:.15s}
 .it.on .t{color:var(--muted2);text-decoration:line-through}
@@ -140,6 +143,10 @@ main.wide{margin-left:0}
   border:1px solid currentColor;border-radius:5px;padding:2px 6px;margin-left:9px;vertical-align:2px;
   white-space:nowrap;opacity:.9}
 .it.on .add{opacity:.35}
+.swap{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  border:1px solid var(--line2);border-radius:5px;padding:2px 6px;margin-left:9px;vertical-align:2px;white-space:nowrap}
+.it.on .swap{opacity:.35}
+.cut .rw .v b{text-decoration:line-through;color:var(--muted2)}
 
 /* ---------- WEATHER ---------- */
 .wx{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
@@ -213,152 +220,150 @@ main.wide{margin-left:0}
 const DATA = [
   { id:"dad", name:"Dad", accent:"var(--dad)", accent2:"var(--dad2)", pages:[
 
-    { id:"travel-day", title:"Travel Day", items:[
-      {t:"Sweatshirt", note:"Good call — Saturday's high is only 73°"},
-      {t:"T-Shirt"},
-      {t:"Jeans", note:"Swap to quick-dry shorts or pants — 85% rain, jeans stay wet all day"},
-      {t:"Underwear"},
-      {t:"Socks"},
-      {t:"Shoes"},
-      {t:"Rain jacket on top", add:true, note:"Umbrellas don't get through the gate"}
+    { id:"travel-day", title:"Travel Day — Worn Out the Door", items:[
+      {q:"1", t:"Quick-dry shorts or pants", sub:true, note:"1 of 5 shorts for the weekend — the rest are in the suitcase"},
+      {q:"1", t:"T-shirt", note:"1 of 6 shirts for the weekend"},
+      {q:"1 pr", t:"Underwear", note:"1 of 6 pairs for the weekend"},
+      {q:"1 pr", t:"Socks", note:"1 of 7 pairs for the weekend"},
+      {q:"1", t:"Sweatshirt or fleece", note:"Saturday only hits 73°"},
+      {q:"1", t:"Rain jacket", add:true, note:"Wear it in — umbrellas don't get through the gate"},
+      {q:"1", t:"Sunglasses"},
+      {q:"1 pr", t:"Shoes", note:"The pair you're willing to soak"}
     ]},
 
     { id:"backpack", title:"Backpack", items:[
-      {t:"iPad"},
-      {t:"Charger Bag"},
-      {t:"Computer"},
-      {t:"Portable battery pack"},
-      {t:"Bose"},
-      {t:"Meds"},
-      {t:"Barbell Protein Bar / Built Bar"},
-      {t:"Thermos"},
-      {t:"Sunglasses"},
-      {t:"Flip Flops"},
-      {t:"Nic Packs"},
-      {t:"Ibuprofen / Tums"},
-      {t:"Fan", note:"Low priority this trip — 73° and raining Saturday"}
+      {q:"1", t:"iPad"},
+      {q:"1", t:"Charger Bag"},
+      {q:"1", t:"Portable battery pack"},
+      {q:"1", t:"Bose"},
+      {q:"2 days", t:"Meds", note:"Plus one spare day"},
+      {q:"4", t:"Barbell / Built Bars", note:"No outside food inside the stadium — these are for the car"},
+      {q:"1", t:"Thermos"},
+      {q:"1", t:"Nic Packs"},
+      {q:"1", t:"Ibuprofen / Tums"}
     ]},
 
     { id:"charger-bag", title:"Charger Bag", items:[
-      {t:"4 x USB C → USB C"},
-      {t:"3 x USB A → USB C"},
-      {t:"Garmin Charger"},
-      {t:"Multi-USB Plug"},
-      {t:"MacBook Pro Charger"},
-      {t:"Remote"}
+      {q:"4", t:"USB C → USB C"},
+      {q:"3", t:"USB A → USB C"},
+      {q:"1", t:"Garmin Charger"},
+      {q:"1", t:"Multi-USB Plug"},
+      {q:"1", t:"Remote"},
+      {q:"1", t:"Car charger", add:true, note:"3 hours each way with the phone navigating"},
+      {q:"1", t:"Short cable", add:true, note:"Lives in the clear bag with the battery pack"}
     ]},
 
     { id:"suitcase", title:"Suitcase", items:[
-      {t:"5 Socks", note:"One night — but wet feet means you'll want the extras"},
-      {t:"6 Underwear"},
-      {t:"1 x khaki shorts"},
-      {t:"2 x gym shorts"},
-      {t:"3 T-shirts", note:"Saturday's shirt will be soaked — you need Sunday's dry"},
-      {t:"1 Button Down"},
-      {t:"Flip-flops"},
-      {t:"Scale"},
-      {t:"Small Bag"},
-      {t:"Fan"},
-      {t:"Alarm Clock"},
-      {t:"Mini Cooler"},
-      {t:"Packets"},
-      {t:"Second pair of shoes", add:true, note:"Saturday's shoes will not dry by Sunday morning"},
-      {t:"Dry shirt for the drive home", add:true}
+      {q:"6 pr", t:"Socks", sub:true, note:"Wool or synthetic. Seal 2 pairs in ziplocs for a mid-game change"},
+      {q:"5 pr", t:"Underwear", note:"7 total with the pair you wear — wet weather, pack the extras"},
+      {q:"5", t:"T-shirts", sub:true, note:"6 total with the one you wear. Two get soaked, one for the drive home"},
+      {q:"2", t:"Collared shirts", add:true, note:"Dinner Saturday night"},
+      {q:"3", t:"Gym shorts", sub:true},
+      {q:"1", t:"Khaki shorts"},
+      {q:"1 pr", t:"Second pair of shoes", add:true, note:"Saturday's will not dry by Sunday morning"},
+      {q:"1 pr", t:"Sandals", add:true},
+      {q:"1 pr", t:"Flip-flops", note:"Hotel shower"},
+      {q:"1 set", t:"Sleep clothes", add:true},
+      {q:"1", t:"Fan"},
+      {q:"1", t:"Small Bag"},
+      {q:"", t:"Packets"}
     ]},
 
     { id:"toiletries", title:"Toiletries Kit", items:[
-      {t:"Hair Product"},
-      {t:"Comb"},
-      {t:"Brush"},
-      {t:"Toothbrush + toothpaste"},
-      {t:"Face Moisturizer"},
-      {t:"Deodorant"},
-      {t:"Razor"},
-      {t:"ibuprofen"},
-      {t:"Tums"},
-      {t:"Melatonin"},
-      {t:"Pen"}
+      {q:"1", t:"Hair Product"},
+      {q:"1", t:"Comb"},
+      {q:"1", t:"Brush"},
+      {q:"1", t:"Toothbrush + toothpaste"},
+      {q:"1", t:"Face Moisturizer"},
+      {q:"1", t:"Deodorant"},
+      {q:"1", t:"Razor"},
+      {q:"", t:"ibuprofen"},
+      {q:"", t:"Tums"},
+      {q:"", t:"Melatonin"},
+      {q:"1", t:"Pen"}
     ]},
 
     { id:"rain-kit", title:"Rain Kit", items:[
-      {t:"Packable rain jacket", add:true},
-      {t:"Rain pants", add:true},
-      {t:"Disposable ponchos x4", add:true, note:"Backup for both of you, both days"},
-      {t:"Clear tote, 12\" x 6\" x 12\" max", add:true, note:"This is the only bag that gets through the gate"},
-      {t:"Microfiber pack towel", add:true, note:"Bleachers will be soaked before you sit down"},
-      {t:"Gallon ziplocs", add:true, note:"Dry socks in, wet clothes out"},
-      {t:"Trash bags", add:true, note:"Wet gear on the drive home, or a dry seat"}
+      {q:"1", t:"Packable rain jacket", add:true},
+      {q:"1", t:"Rain pants", add:true, note:"Optional, but Saturday is the day for them"},
+      {q:"4", t:"Disposable ponchos", add:true, note:"Two each, both days"},
+      {q:"1", t:"Clear tote, 12\" x 6\" x 12\"", add:true, note:"The only bag that gets through the gate"},
+      {q:"2", t:"Microfiber pack towels", add:true, note:"Bleachers are soaked before you sit"},
+      {q:"6", t:"Gallon ziplocs", add:true, note:"Dry socks in, wet clothes out"},
+      {q:"3", t:"Trash bags", add:true, note:"Wet gear for the ride home, or a dry seat"}
     ]},
 
     { id:"game-bag", title:"Game Day Bag", items:[
-      {t:"Tickets loaded in phone", add:true, note:"Mobile only — load before you leave the hotel"},
-      {t:"Battery pack + short cable", add:true},
-      {t:"Waterproof phone pouch on a lanyard", add:true},
-      {t:"Poncho", add:true},
-      {t:"Pack towel", add:true},
-      {t:"Sunscreen", add:true, note:"UV still gets through overcast"},
-      {t:"Hand wipes", add:true},
-      {t:"Card + some cash", add:true},
-      {t:"Binoculars or monocular", add:true, note:"General admission sightlines"},
-      {t:"Sealed water bottle", add:true, note:"Confirm the venue allows it"}
-    ]}
+      {q:"2 days", t:"Tickets loaded in phone", add:true, note:"Mobile only — load both before you leave"},
+      {q:"1", t:"Battery pack + short cable", add:true},
+      {q:"1", t:"Waterproof phone pouch", add:true},
+      {q:"2", t:"Ponchos", add:true},
+      {q:"1", t:"Pack towel", add:true},
+      {q:"1", t:"Sunscreen", add:true, note:"UV still gets through overcast"},
+      {q:"1", t:"Hand wipes", add:true},
+      {q:"$40", t:"Cash + card", add:true},
+      {q:"1", t:"Binoculars", add:true, note:"General admission sightlines"},
+      {q:"1", t:"Sealed water bottle", add:true, note:"Confirm the venue allows it"}
+    ]},
+
+    { id:"totals", title:"Weekend Totals", type:"totals" },
+    { id:"cuts", title:"Cut From Your List", type:"cuts" }
   ]},
 
   { id:"james", name:"James", accent:"var(--james)", accent2:"var(--james2)", pages:[
 
-    { id:"j-travel", title:"Travel Day", items:[
-      {t:"Hoodie or sweatshirt", note:"73° and wet on Saturday"},
-      {t:"T-shirt"},
-      {t:"Quick-dry shorts"},
-      {t:"Underwear"},
-      {t:"Socks"},
-      {t:"Shoes"},
-      {t:"Rain jacket on top"}
+    { id:"j-travel", title:"Travel Day — Worn Out the Door", items:[
+      {q:"1", t:"Quick-dry shorts", note:"1 of 4 for the weekend"},
+      {q:"1", t:"T-shirt", note:"1 of 5 for the weekend"},
+      {q:"1 pr", t:"Underwear", note:"1 of 5 for the weekend"},
+      {q:"1 pr", t:"Socks", note:"1 of 6 pairs for the weekend"},
+      {q:"1", t:"Hoodie", note:"73° and wet on Saturday"},
+      {q:"1", t:"Rain jacket"},
+      {q:"1", t:"Sunglasses"},
+      {q:"1 pr", t:"Shoes"}
     ]},
 
     { id:"j-suitcase", title:"Suitcase", items:[
-      {t:"Socks x4", note:"Two pairs will get soaked"},
-      {t:"Underwear x3"},
-      {t:"Shorts x2"},
-      {t:"T-shirts x3"},
-      {t:"Hoodie"},
-      {t:"Sleep clothes"},
-      {t:"Second pair of shoes", note:"Saturday's won't dry overnight"},
-      {t:"Flip-flops"},
-      {t:"Dry shirt for the drive home"}
+      {q:"5 pr", t:"Socks", note:"Wettest item of the weekend"},
+      {q:"4 pr", t:"Underwear"},
+      {q:"4", t:"T-shirts"},
+      {q:"3", t:"Shorts"},
+      {q:"1", t:"Collared shirt", add:true, note:"Dinner Saturday night"},
+      {q:"1", t:"Hoodie"},
+      {q:"1 pr", t:"Second pair of shoes", note:"Saturday's won't dry overnight"},
+      {q:"1 pr", t:"Sandals", add:true},
+      {q:"1 pr", t:"Flip-flops"},
+      {q:"1 set", t:"Sleep clothes"}
     ]},
 
     { id:"j-rain", title:"Rain Kit", items:[
-      {t:"Rain jacket"},
-      {t:"Ponchos x2"},
-      {t:"Dry socks sealed in a ziploc"},
-      {t:"Pack towel"},
-      {t:"Ball cap with a brim"}
+      {q:"1", t:"Rain jacket"},
+      {q:"2", t:"Ponchos"},
+      {q:"2 pr", t:"Dry socks in a ziploc"},
+      {q:"1", t:"Pack towel"}
     ]},
 
     { id:"j-game", title:"Game Day & Meet the Players", items:[
-      {t:"Lacrosse ball or mini stick head", note:"Something to get signed at both meet & greets"},
-      {t:"Paint pen, in a ziploc", note:"Silver or gold — a marker bleeds on wet gear"},
-      {t:"Team gear to wear"},
-      {t:"Phone + charger"},
-      {t:"Money for merch"},
-      {t:"Sunglasses"}
+      {q:"1", t:"Lacrosse ball or mini stick head", note:"Something to get signed at both meet & greets"},
+      {q:"1", t:"Paint pen, in a ziploc", note:"Silver or gold — marker bleeds on wet gear"},
+      {q:"1", t:"Team gear to wear"},
+      {q:"1", t:"Phone + charger"},
+      {q:"$40", t:"Money for merch"},
+      {q:"1", t:"Sunglasses"}
     ]},
 
     { id:"j-toiletries", title:"Toiletries", items:[
-      {t:"Toothbrush + toothpaste"},
-      {t:"Deodorant"},
-      {t:"Shampoo / body wash"},
-      {t:"Brush"},
-      {t:"Any meds"}
+      {q:"1", t:"Toothbrush + toothpaste"},
+      {q:"1", t:"Deodorant"},
+      {q:"1", t:"Brush"},
+      {q:"", t:"Any meds"}
     ]},
 
     { id:"j-fun", title:"Car & Downtime", items:[
-      {t:"Headphones"},
-      {t:"Switch or tablet + charger"},
-      {t:"Book"},
-      {t:"Pillow"},
-      {t:"Snacks for the car"}
+      {q:"1", t:"Headphones"},
+      {q:"1", t:"Switch or tablet + charger"},
+      {q:"1", t:"Pillow"},
+      {q:"", t:"Snacks for the car"}
     ]}
   ]},
 
@@ -369,45 +374,70 @@ const DATA = [
     { id:"schedule", title:"Schedule", type:"schedule" },
 
     { id:"car", title:"Car", items:[
-      {t:"Gas up the night before"},
-      {t:"Phone mount"},
-      {t:"Car charger"},
-      {t:"Umbrella — leave it IN the car", note:"Great for the parking lot, banned inside the stadium"},
-      {t:"Old towels for the seats"},
-      {t:"Trash bag for wet gear"},
-      {t:"Cooler + drinks", note:"Stays in the car — no outside food or drink inside"},
-      {t:"Cash for parking"}
+      {q:"1", t:"Mini Cooler", sub:true, note:"Moved out of the suitcase — food and drink stay in the car"},
+      {q:"1", t:"Umbrella", add:true, note:"For the parking lot only. It will not get through the gate"},
+      {q:"2", t:"Old towels for the seats", add:true},
+      {q:"3", t:"Trash bags for wet gear", add:true},
+      {q:"1", t:"Phone mount"},
+      {q:"1", t:"Car charger"},
+      {q:"$30", t:"Cash for parking"},
+      {q:"", t:"Gas up the night before"}
     ]},
 
     { id:"dnf", title:"Do Not Forget", items:[
-      {t:"Tickets loaded in your phone"},
-      {t:"Meds"},
-      {t:"Wallet + license"},
-      {t:"Phone charger + battery pack"},
-      {t:"Hotel confirmation"},
-      {t:"Rain jackets — both of you"},
-      {t:"Second pair of shoes — both of you"},
-      {t:"House keys"}
+      {q:"2 days", t:"Tickets loaded in your phone"},
+      {q:"", t:"Meds"},
+      {q:"1", t:"Wallet + license"},
+      {q:"1", t:"Phone charger + battery pack"},
+      {q:"1", t:"Hotel confirmation"},
+      {q:"2", t:"Rain jackets — one each"},
+      {q:"2 pr", t:"Second shoes — one pair each"},
+      {q:"1", t:"House keys"}
     ]},
 
     { id:"leaving", title:"Before You Leave the House", items:[
-      {t:"Everything charged overnight"},
-      {t:"Bags loaded in the car the night before"},
-      {t:"Thermostat set"},
-      {t:"Trash out"},
-      {t:"Doors locked"}
+      {q:"", t:"Everything charged overnight"},
+      {q:"", t:"Bags in the car the night before"},
+      {q:"", t:"Thermostat set"},
+      {q:"", t:"Trash out"},
+      {q:"", t:"Doors locked"}
     ]},
 
     { id:"checkout", title:"Hotel Checkout Sweep", items:[
-      {t:"Charger still in the wall", note:"The one that always gets left"},
-      {t:"Bathroom counter and shower"},
-      {t:"Closet and behind the door"},
-      {t:"Under the bed"},
-      {t:"Nightstand drawers"},
-      {t:"Wet clothes hung up to dry"},
-      {t:"Mini fridge"}
+      {q:"", t:"Charger still in the wall", note:"The one that always gets left"},
+      {q:"", t:"Bathroom counter and shower"},
+      {q:"", t:"Closet and behind the door"},
+      {q:"", t:"Under the bed"},
+      {q:"", t:"Nightstand drawers"},
+      {q:"", t:"Wet clothes hung to dry"},
+      {q:"", t:"Mini fridge"}
     ]}
   ]}
+];
+
+/* Weekend totals — worn + packed, so the counts are legible in one place. */
+const TOTALS = [
+  {k:"7 pr",  t:"Socks",          v:"1 worn + 6 packed — wettest item of the weekend"},
+  {k:"6 pr",  t:"Underwear",      v:"1 worn + 5 packed"},
+  {k:"6",     t:"T-shirts",       v:"1 worn + 5 packed"},
+  {k:"2",     t:"Collared shirts",v:"Dinner Saturday night"},
+  {k:"5",     t:"Shorts",         v:"1 worn + 3 gym + 1 khaki"},
+  {k:"2 pr",  t:"Shoes",          v:"Saturday's pair will still be wet Sunday"},
+  {k:"2 pr",  t:"Sandals + flip-flops", v:"Dry feet after the games, and the hotel shower"},
+  {k:"1 set", t:"Sleep clothes",  v:""},
+  {k:"1",     t:"Rain jacket",    v:"Plus 4 ponchos in the rain kit"}
+];
+
+/* Items removed from Dan's standing list for this trip. */
+const CUTS = [
+  {where:"Backpack",  t:"Computer",           why:"One night, both days at the stadium"},
+  {where:"Charger",   t:"MacBook Pro Charger", why:"Goes with the laptop"},
+  {where:"Suitcase",  t:"Button Down",        why:"No occasion for it this weekend"},
+  {where:"Suitcase",  t:"Scale",              why:"One night away"},
+  {where:"Suitcase",  t:"Alarm Clock",        why:"Your phone covers a single night"},
+  {where:"Backpack",  t:"Fan (second one)",   why:"You listed it twice — kept the one in the suitcase"},
+  {where:"Backpack",  t:"Flip Flops (second pair)", why:"Listed twice — kept the suitcase pair"},
+  {where:"Suitcase",  t:"Mini Cooler",        why:"Not cut — moved to the Car page"}
 ];
 
 /* Forecast pulled Thu Jul 30. Re-check Friday night. */
@@ -419,7 +449,7 @@ const WX = [
 /* ============================================================ */
 
 var store={}, LS_OK=false;
-var KEY="columbus-pack-v1", TKEY="columbus-pack-theme";
+var KEY="columbus-pack-v2", TKEY="columbus-pack-theme";
 try{
   var probe="__t";localStorage.setItem(probe,"1");localStorage.removeItem(probe);
   LS_OK=true;
@@ -497,9 +527,11 @@ function checklist(p){
   var h='<div class="list">';
   itemsOf(p).forEach(function(it,i){
     var on=!!store[keyOf(p,i)];
+    var tag = it.add?'<span class="add">added</span>' : (it.sub?'<span class="swap">swapped</span>':'');
     h+='<button class="it'+(on?" on":"")+'" data-i="'+i+'">'+
        '<span class="box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
-       '<span class="txt"><span class="t">'+esc(it.t)+(it.add?'<span class="add">+ added</span>':'')+'</span>'+
+       '<span class="qty">'+esc(it.q||"")+'</span>'+
+       '<span class="txt"><span class="t">'+esc(it.t)+tag+'</span>'+
        (it.note?'<span class="note">'+esc(it.note)+'</span>':'')+'</span></button>';
   });
   return h+'</div>';
@@ -525,6 +557,23 @@ function weatherPage(){
      '<a class="btn" href="https://forecast.weather.gov/MapClick.php?lat=39.9852&lon=-82.9848" target="_blank" rel="noopener">Live forecast</a>'+
      '<a class="btn" href="https://radar.weather.gov/station/kiln/standard" target="_blank" rel="noopener">Radar</a></div>';
   return h;
+}
+
+function totalsPage(){
+  var h='<div class="rows">';
+  TOTALS.forEach(function(r){
+    h+='<div class="rw"><span class="k">'+esc(r.k)+'</span><span class="v"><b>'+esc(r.t)+'</b>'+
+       (r.v?'<span>'+esc(r.v)+'</span>':'')+'</span></div>';
+  });
+  return h+'</div>';
+}
+
+function cutsPage(){
+  var h='<div class="rows cut">';
+  CUTS.forEach(function(c){
+    h+='<div class="rw"><span class="k">'+esc(c.where)+'</span><span class="v"><b>'+esc(c.t)+'</b><span>'+esc(c.why)+'</span></span></div>';
+  });
+  return h+'</div>';
 }
 
 function gatePage(){
@@ -562,6 +611,8 @@ function render(){
 
   var body="", meta="";
   if(p.type==="weather") body=weatherPage();
+  else if(p.type==="cuts") body=cutsPage();
+  else if(p.type==="totals") body=totalsPage();
   else if(p.type==="gate") body=gatePage();
   else if(p.type==="schedule") body=schedulePage();
   else{

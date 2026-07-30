@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Columbus — Packing</title>
+<meta name="theme-color" content="#f7f7f5" id="metaTheme">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Packing">
+<script>
+/* set theme before first paint so there's no flash */
+(function(){
+  var t="light";
+  try{ t = localStorage.getItem("columbus-pack-theme") || "light"; }catch(e){}
+  document.documentElement.setAttribute("data-theme", t);
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- LIGHT (default) ---------- */
+:root{
+  --bg:#f7f7f5; --navbg:#ffffff; --panel:#ffffff; --panel2:#f2f2ef;
+  --topbg:rgba(247,247,245,.94);
+  --line:rgba(0,0,0,.10); --line2:rgba(0,0,0,.20);
+  --text:#17171a; --muted:#5f5f68; --muted2:#8a8a92;
+  --track:rgba(0,0,0,.09);
+  --check:#ffffff;
+  --danger:#c0392b;
+  --dad:#8f6200;   --dad2:#c9950f;
+  --james:#1f6fb2; --james2:#3f92d4;
+  --trip:#14805e;  --trip2:#22a077;
+  --callbg:rgba(20,128,94,.07); --callbd:rgba(20,128,94,.30);
+  --topH:calc(60px + env(safe-area-inset-top, 0px));
+  --nav:300px;
+}
+/* ---------- DARK ---------- */
+:root[data-theme="dark"]{
+  --bg:#0b0b0d; --navbg:#121217; --panel:#16161c; --panel2:#1b1b22;
+  --topbg:rgba(11,11,13,.94);
+  --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+  --text:#f4f3ef; --muted:#9a9aa4; --muted2:#6f6f78;
+  --track:rgba(255,255,255,.09);
+  --check:#0b0b0d;
+  --danger:#ff8b8b;
+  --dad:#f4c430;   --dad2:#d98f1f;
+  --james:#4fb0e5; --james2:#2f7fc4;
+  --trip:#3fbf8f;  --trip2:#249d78;
+  --callbg:rgba(63,191,143,.07); --callbd:rgba(63,191,143,.30);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:"Barlow",system-ui,-apple-system,sans-serif;
+  font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
+  transition:background .2s,color .2s}
+.disp{font-family:"Anton",sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.01em;line-height:1}
+button{font-family:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-user-select:none;user-select:none}
+a{color:inherit}
+
+/* ---------- TOP BAR ---------- */
+.top{position:fixed;top:0;left:0;right:0;height:var(--topH);z-index:60;display:flex;align-items:center;gap:12px;
+  padding:env(safe-area-inset-top, 0px) 14px 0;background:var(--topbg);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.iconbtn{width:44px;height:44px;border-radius:11px;border:1px solid var(--line2);flex:none;
+  display:flex;align-items:center;justify-content:center;transition:.15s}
+.iconbtn:active{background:var(--panel2)}
+.burger span{display:block;width:18px;height:2px;background:var(--text);position:relative}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:18px;height:2px;background:var(--text)}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+.iconbtn svg{width:19px;height:19px;stroke:var(--text);fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.top .ttl{font-family:"Anton",sans-serif;font-size:1.05rem;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+.top .spacer{flex:1}
+.top .allprog{display:flex;align-items:center;gap:9px;font-size:.78rem;color:var(--muted);white-space:nowrap}
+.top .bar{width:104px;height:7px;border-radius:99px;background:var(--track);overflow:hidden}
+.top .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--dad2),var(--dad));transition:width .3s}
+.moon{display:none}
+:root[data-theme="dark"] .sun{display:none}
+:root[data-theme="dark"] .moon{display:block}
+
+/* ---------- NAV ---------- */
+.nav{position:fixed;top:var(--topH);bottom:0;left:0;width:var(--nav);z-index:55;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  background:var(--navbg);border-right:1px solid var(--line);
+  padding:14px 0 calc(40px + env(safe-area-inset-bottom, 0px));transition:transform .22s ease}
+.nav.closed{transform:translateX(-100%)}
+.grp{margin-bottom:4px}
+.grp>.gh{width:100%;display:flex;align-items:center;gap:10px;padding:14px 18px;text-align:left}
+.grp>.gh .gname{font-family:"Anton",sans-serif;font-size:1.02rem;letter-spacing:.05em;text-transform:uppercase;flex:1}
+.grp>.gh .gcount{font-size:.72rem;color:var(--muted2);font-variant-numeric:tabular-nums}
+.grp>.gh .chev{width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);
+  transform:rotate(45deg);transition:transform .2s;margin-right:2px}
+.grp.collapsed>.gh .chev{transform:rotate(-45deg)}
+.grp .items{overflow:hidden;transition:max-height .22s ease}
+.grp.collapsed .items{max-height:0 !important}
+.nl{width:100%;display:flex;align-items:center;gap:10px;padding:13px 18px 13px 30px;text-align:left;
+  font-size:.96rem;color:var(--muted);border-left:3px solid transparent;transition:.15s}
+.nl .lbl{flex:1}
+.nl .ct{font-size:.72rem;color:var(--muted2);font-variant-numeric:tabular-nums}
+.nl.done .ct{color:var(--accent)}
+.nl.active{color:var(--text);background:var(--panel2);border-left-color:var(--accent);font-weight:600}
+.nav .reset{margin:18px 18px 0;padding:12px;border:1px solid var(--line);border-radius:10px;
+  width:calc(100% - 36px);font-size:.82rem;color:var(--muted2)}
+.nav .reset:active{color:var(--danger);border-color:var(--danger)}
+.scrim{position:fixed;top:var(--topH);left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:54;
+  opacity:0;pointer-events:none;transition:.2s}
+.scrim.on{opacity:1;pointer-events:auto}
+
+/* ---------- MAIN ---------- */
+main{padding-top:var(--topH);padding-bottom:calc(70px + env(safe-area-inset-bottom, 0px));
+  margin-left:var(--nav);transition:margin .22s ease}
+main.wide{margin-left:0}
+.wrap{max-width:780px;margin:0 auto;padding:32px 20px 0}
+.phead{margin-bottom:22px}
+.phead .eye{font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.phead h1{font-size:1.55rem;font-weight:600;letter-spacing:.01em;margin-top:6px}
+.pbar{margin-top:16px;height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .3s}
+.pmeta{margin-top:9px;font-size:.8rem;color:var(--muted2);font-variant-numeric:tabular-nums}
+
+/* ---------- CHECK ITEMS ---------- */
+.list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+.it{display:flex;align-items:flex-start;gap:14px;padding:17px 18px;border-bottom:1px solid var(--line);
+  cursor:pointer;transition:background .12s;width:100%;text-align:left;min-height:58px}
+.it:last-child{border-bottom:0}
+.it:active{background:var(--panel2)}
+.box{width:27px;height:27px;border-radius:8px;border:2px solid var(--line2);flex:none;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;transition:.15s}
+.box svg{width:16px;height:16px;opacity:0;transform:scale(.6);transition:.15s}
+.it.on .box{background:var(--accent);border-color:var(--accent);color:var(--check)}
+.it.on .box svg{opacity:1;transform:scale(1)}
+.it .txt{flex:1;min-width:0}
+.it .t{font-size:1.04rem;font-weight:500;transition:.15s}
+.it.on .t{color:var(--muted2);text-decoration:line-through}
+.it .note{display:block;font-size:.86rem;color:var(--muted);margin-top:3px}
+.it.on .note{color:var(--muted2);opacity:.6}
+.add{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+  border:1px solid currentColor;border-radius:5px;padding:2px 6px;margin-left:9px;vertical-align:2px;
+  white-space:nowrap;opacity:.9}
+.it.on .add{opacity:.35}
+
+/* ---------- WEATHER ---------- */
+.wx{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+.wxc{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.wxc .d{font-family:"Anton",sans-serif;font-size:1.15rem;letter-spacing:.03em}
+.wxc .tmp{font-family:"Anton",sans-serif;font-size:2.5rem;margin:8px 0 2px;line-height:1}
+.wxc .lo{font-size:.86rem;color:var(--muted)}
+.wxc .rain{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+.wxc .rain b{color:var(--james);font-size:1.2rem;font-family:"Anton",sans-serif;font-weight:400}
+.callout{background:var(--callbg);border:1px solid var(--callbd);border-radius:14px;padding:18px 20px;margin-bottom:20px}
+.callout h3{font-size:1rem;font-weight:600;margin-bottom:10px}
+.callout ul{margin:0;padding-left:19px}
+.callout li{margin-bottom:8px;font-size:.96rem;color:var(--text);opacity:.88}
+.callout li:last-child{margin-bottom:0}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font-weight:600;font-size:.88rem;
+  padding:13px 18px;border-radius:10px;border:1px solid var(--line2);transition:.16s}
+.btn:active{border-color:var(--accent);color:var(--accent)}
+
+/* ---------- INFO ROWS ---------- */
+.rows{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+.rw{display:flex;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line);font-size:.98rem}
+.rw:last-child{border-bottom:0}
+.rw .k{min-width:74px;color:var(--accent);font-weight:600;font-size:.86rem;flex:none;font-variant-numeric:tabular-nums}
+.rw .v b{display:block;font-weight:600}
+.rw .v span{color:var(--muted);font-size:.9rem}
+.no{color:var(--danger)}
+
+@media(max-width:900px){
+  main{margin-left:0}
+  .nav{transform:translateX(-100%);width:min(86vw,320px)}
+  .nav.open{transform:translateX(0)}
+  .top .allprog .lbltxt{display:none}
+  .top .bar{width:74px}
+  .top{gap:10px;padding-left:12px;padding-right:12px}
+  .wx{grid-template-columns:1fr}
+  .wrap{padding:24px 16px 0}
+  .it{padding:16px 15px}
+  .rw{padding:15px 15px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <button class="iconbtn burger" id="burger" aria-label="Menu"><span></span></button>
+  <div class="ttl">Columbus</div>
+  <div class="spacer"></div>
+  <div class="allprog"><span class="lbltxt" id="allTxt">0 / 0</span><span class="bar"><i id="allBar"></i></span></div>
+  <button class="iconbtn" id="themeBtn" aria-label="Toggle light or dark">
+    <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"/></svg>
+    <svg class="moon" viewBox="0 0 24 24"><path d="M20.5 14.6A8.5 8.5 0 1 1 9.4 3.5a7 7 0 0 0 11.1 11.1z"/></svg>
+  </button>
+</div>
+
+<nav class="nav" id="nav"></nav>
+<div class="scrim" id="scrim"></div>
+<main id="main"><div class="wrap" id="view"></div></main>
+
+<script>
+/* ============================================================
+   PACKING DATA — edit here.
+   To add an item, add one line to any `items` array:
+        {t:"Item name"},
+   Optional extras on any item:
+        note: "short reason"   -> grey line under the item
+        add: true              -> shows the "+ ADDED" tag
+   To add a whole page, copy one {id,title,items:[]} block.
+   ============================================================ */
+const DATA = [
+  { id:"dad", name:"Dad", accent:"var(--dad)", accent2:"var(--dad2)", pages:[
+
+    { id:"travel-day", title:"Travel Day", items:[
+      {t:"Sweatshirt", note:"Good call — Saturday's high is only 73°"},
+      {t:"T-Shirt"},
+      {t:"Jeans", note:"Swap to quick-dry shorts or pants — 85% rain, jeans stay wet all day"},
+      {t:"Underwear"},
+      {t:"Socks"},
+      {t:"Shoes"},
+      {t:"Rain jacket on top", add:true, note:"Umbrellas don't get through the gate"}
+    ]},
+
+    { id:"backpack", title:"Backpack", items:[
+      {t:"iPad"},
+      {t:"Charger Bag"},
+      {t:"Computer"},
+      {t:"Portable battery pack"},
+      {t:"Bose"},
+      {t:"Meds"},
+      {t:"Barbell Protein Bar / Built Bar"},
+      {t:"Thermos"},
+      {t:"Sunglasses"},
+      {t:"Flip Flops"},
+      {t:"Nic Packs"},
+      {t:"Ibuprofen / Tums"},
+      {t:"Fan", note:"Low priority this trip — 73° and raining Saturday"}
+    ]},
+
+    { id:"charger-bag", title:"Charger Bag", items:[
+      {t:"4 x USB C → USB C"},
+      {t:"3 x USB A → USB C"},
+      {t:"Garmin Charger"},
+      {t:"Multi-USB Plug"},
+      {t:"MacBook Pro Charger"},
+      {t:"Remote"}
+    ]},
+
+    { id:"suitcase", title:"Suitcase", items:[
+      {t:"5 Socks", note:"One night — but wet feet means you'll want the extras"},
+      {t:"6 Underwear"},
+      {t:"1 x khaki shorts"},
+      {t:"2 x gym shorts"},
+      {t:"3 T-shirts", note:"Saturday's shirt will be soaked — you need Sunday's dry"},
+      {t:"1 Button Down"},
+      {t:"Flip-flops"},
+      {t:"Scale"},
+      {t:"Small Bag"},
+      {t:"Fan"},
+      {t:"Alarm Clock"},
+      {t:"Mini Cooler"},
+      {t:"Packets"},
+      {t:"Second pair of shoes", add:true, note:"Saturday's shoes will not dry by Sunday morning"},
+      {t:"Dry shirt for the drive home", add:true}
+    ]},
+
+    { id:"toiletries", title:"Toiletries Kit", items:[
+      {t:"Hair Product"},
+      {t:"Comb"},
+      {t:"Brush"},
+      {t:"Toothbrush + toothpaste"},
+      {t:"Face Moisturizer"},
+      {t:"Deodorant"},
+      {t:"Razor"},
+      {t:"ibuprofen"},
+      {t:"Tums"},
+      {t:"Melatonin"},
+      {t:"Pen"}
+    ]},
+
+    { id:"rain-kit", title:"Rain Kit", items:[
+      {t:"Packable rain jacket", add:true},
+      {t:"Rain pants", add:true},
+      {t:"Disposable ponchos x4", add:true, note:"Backup for both of you, both days"},
+      {t:"Clear tote, 12\" x 6\" x 12\" max", add:true, note:"This is the only bag that gets through the gate"},
+      {t:"Microfiber pack towel", add:true, note:"Bleachers will be soaked before you sit down"},
+      {t:"Gallon ziplocs", add:true, note:"Dry socks in, wet clothes out"},
+      {t:"Trash bags", add:true, note:"Wet gear on the drive home, or a dry seat"}
+    ]},
+
+    { id:"game-bag", title:"Game Day Bag", items:[
+      {t:"Tickets loaded in phone", add:true, note:"Mobile only — load before you leave the hotel"},
+      {t:"Battery pack + short cable", add:true},
+      {t:"Waterproof phone pouch on a lanyard", add:true},
+      {t:"Poncho", add:true},
+      {t:"Pack towel", add:true},
+      {t:"Sunscreen", add:true, note:"UV still gets through overcast"},
+      {t:"Hand wipes", add:true},
+      {t:"Card + some cash", add:true},
+      {t:"Binoculars or monocular", add:true, note:"General admission sightlines"},
+      {t:"Sealed water bottle", add:true, note:"Confirm the venue allows it"}
+    ]}
+  ]},
+
+  { id:"james", name:"James", accent:"var(--james)", accent2:"var(--james2)", pages:[
+
+    { id:"j-travel", title:"Travel Day", items:[
+      {t:"Hoodie or sweatshirt", note:"73° and wet on Saturday"},
+      {t:"T-shirt"},
+      {t:"Quick-dry shorts"},
+      {t:"Underwear"},
+      {t:"Socks"},
+      {t:"Shoes"},
+      {t:"Rain jacket on top"}
+    ]},
+
+    { id:"j-suitcase", title:"Suitcase", items:[
+      {t:"Socks x4", note:"Two pairs will get soaked"},
+      {t:"Underwear x3"},
+      {t:"Shorts x2"},
+      {t:"T-shirts x3"},
+      {t:"Hoodie"},
+      {t:"Sleep clothes"},
+      {t:"Second pair of shoes", note:"Saturday's won't dry overnight"},
+      {t:"Flip-flops"},
+      {t:"Dry shirt for the drive home"}
+    ]},
+
+    { id:"j-rain", title:"Rain Kit", items:[
+      {t:"Rain jacket"},
+      {t:"Ponchos x2"},
+      {t:"Dry socks sealed in a ziploc"},
+      {t:"Pack towel"},
+      {t:"Ball cap with a brim"}
+    ]},
+
+    { id:"j-game", title:"Game Day & Meet the Players", items:[
+      {t:"Lacrosse ball or mini stick head", note:"Something to get signed at both meet & greets"},
+      {t:"Paint pen, in a ziploc", note:"Silver or gold — a marker bleeds on wet gear"},
+      {t:"Team gear to wear"},
+      {t:"Phone + charger"},
+      {t:"Money for merch"},
+      {t:"Sunglasses"}
+    ]},
+
+    { id:"j-toiletries", title:"Toiletries", items:[
+      {t:"Toothbrush + toothpaste"},
+      {t:"Deodorant"},
+      {t:"Shampoo / body wash"},
+      {t:"Brush"},
+      {t:"Any meds"}
+    ]},
+
+    { id:"j-fun", title:"Car & Downtime", items:[
+      {t:"Headphones"},
+      {t:"Switch or tablet + charger"},
+      {t:"Book"},
+      {t:"Pillow"},
+      {t:"Snacks for the car"}
+    ]}
+  ]},
+
+  { id:"trip", name:"Trip", accent:"var(--trip)", accent2:"var(--trip2)", pages:[
+
+    { id:"weather", title:"Weather", type:"weather" },
+    { id:"gate", title:"Gate Rules", type:"gate" },
+    { id:"schedule", title:"Schedule", type:"schedule" },
+
+    { id:"car", title:"Car", items:[
+      {t:"Gas up the night before"},
+      {t:"Phone mount"},
+      {t:"Car charger"},
+      {t:"Umbrella — leave it IN the car", note:"Great for the parking lot, banned inside the stadium"},
+      {t:"Old towels for the seats"},
+      {t:"Trash bag for wet gear"},
+      {t:"Cooler + drinks", note:"Stays in the car — no outside food or drink inside"},
+      {t:"Cash for parking"}
+    ]},
+
+    { id:"dnf", title:"Do Not Forget", items:[
+      {t:"Tickets loaded in your phone"},
+      {t:"Meds"},
+      {t:"Wallet + license"},
+      {t:"Phone charger + battery pack"},
+      {t:"Hotel confirmation"},
+      {t:"Rain jackets — both of you"},
+      {t:"Second pair of shoes — both of you"},
+      {t:"House keys"}
+    ]},
+
+    { id:"leaving", title:"Before You Leave the House", items:[
+      {t:"Everything charged overnight"},
+      {t:"Bags loaded in the car the night before"},
+      {t:"Thermostat set"},
+      {t:"Trash out"},
+      {t:"Doors locked"}
+    ]},
+
+    { id:"checkout", title:"Hotel Checkout Sweep", items:[
+      {t:"Charger still in the wall", note:"The one that always gets left"},
+      {t:"Bathroom counter and shower"},
+      {t:"Closet and behind the door"},
+      {t:"Under the bed"},
+      {t:"Nightstand drawers"},
+      {t:"Wet clothes hung up to dry"},
+      {t:"Mini fridge"}
+    ]}
+  ]}
+];
+
+/* Forecast pulled Thu Jul 30. Re-check Friday night. */
+const WX = [
+  {day:"Saturday", date:"Aug 1", hi:73, lo:70, rain:85},
+  {day:"Sunday",   date:"Aug 2", hi:80, lo:67, rain:85}
+];
+
+/* ============================================================ */
+
+var store={}, LS_OK=false;
+var KEY="columbus-pack-v1", TKEY="columbus-pack-theme";
+try{
+  var probe="__t";localStorage.setItem(probe,"1");localStorage.removeItem(probe);
+  LS_OK=true;
+  var raw=localStorage.getItem(KEY);
+  if(raw) store=JSON.parse(raw)||{};
+}catch(e){ LS_OK=false; }
+function save(){ if(!LS_OK) return; try{ localStorage.setItem(KEY,JSON.stringify(store)); }catch(e){} }
+
+/* theme */
+var THEME_BG={light:"#f7f7f5",dark:"#0b0b0d"};
+function setTheme(t){
+  document.documentElement.setAttribute("data-theme",t);
+  var m=document.getElementById("metaTheme"); if(m) m.setAttribute("content",THEME_BG[t]||THEME_BG.light);
+  try{ localStorage.setItem(TKEY,t); }catch(e){}
+}
+document.getElementById("themeBtn").onclick=function(){
+  var cur=document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light";
+  setTheme(cur==="dark"?"light":"dark");
+};
+
+var PAGES=[];
+DATA.forEach(function(g){ g.pages.forEach(function(p){ p.group=g; PAGES.push(p); }); });
+
+function itemsOf(p){ return p.items||[]; }
+function keyOf(p,i){ return p.id+":"+i; }
+function doneCount(p){ var n=0; itemsOf(p).forEach(function(_,i){ if(store[keyOf(p,i)]) n++; }); return n; }
+function groupTotals(g){ var d=0,t=0; g.pages.forEach(function(p){ d+=doneCount(p); t+=itemsOf(p).length; }); return [d,t]; }
+function allTotals(){ var d=0,t=0; DATA.forEach(function(g){ var r=groupTotals(g); d+=r[0]; t+=r[1]; }); return [d,t]; }
+
+var collapsed={}, current=null;
+
+function buildNav(){
+  var nav=document.getElementById("nav");
+  nav.innerHTML="";
+  DATA.forEach(function(g){
+    var wrap=document.createElement("div");
+    wrap.className="grp"+(collapsed[g.id]?" collapsed":"");
+    var r=groupTotals(g);
+    var head=document.createElement("button");
+    head.className="gh";
+    head.innerHTML='<span class="chev"></span><span class="gname">'+g.name+'</span>'+
+                   (r[1]?'<span class="gcount">'+r[0]+'/'+r[1]+'</span>':'');
+    head.onclick=function(){ collapsed[g.id]=!collapsed[g.id]; buildNav(); };
+    wrap.appendChild(head);
+
+    var box=document.createElement("div");
+    box.className="items";
+    g.pages.forEach(function(p){
+      var b=document.createElement("button");
+      var n=itemsOf(p).length, d=doneCount(p), done=n>0&&d===n;
+      b.className="nl"+(p.id===current?" active":"")+(done?" done":"");
+      b.style.setProperty("--accent",g.accent);
+      b.innerHTML='<span class="lbl">'+p.title+'</span>'+(n?'<span class="ct">'+(done?'✓':d+'/'+n)+'</span>':'');
+      b.onclick=function(){ location.hash=p.id; if(window.innerWidth<=900) closeNav(); };
+      box.appendChild(b);
+    });
+    wrap.appendChild(box);
+    nav.appendChild(wrap);
+    box.style.maxHeight=collapsed[g.id]?"0px":box.scrollHeight+"px";
+  });
+
+  var rs=document.createElement("button");
+  rs.className="reset"; rs.textContent="Uncheck everything";
+  rs.onclick=function(){ if(confirm("Uncheck every item?")){ store={}; save(); render(); } };
+  nav.appendChild(rs);
+
+  var a=allTotals();
+  document.getElementById("allTxt").textContent=a[0]+" / "+a[1];
+  document.getElementById("allBar").style.width=(a[1]?(a[0]/a[1]*100):0)+"%";
+}
+
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+function checklist(p){
+  var h='<div class="list">';
+  itemsOf(p).forEach(function(it,i){
+    var on=!!store[keyOf(p,i)];
+    h+='<button class="it'+(on?" on":"")+'" data-i="'+i+'">'+
+       '<span class="box"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'+
+       '<span class="txt"><span class="t">'+esc(it.t)+(it.add?'<span class="add">+ added</span>':'')+'</span>'+
+       (it.note?'<span class="note">'+esc(it.note)+'</span>':'')+'</span></button>';
+  });
+  return h+'</div>';
+}
+
+function weatherPage(){
+  var h='<div class="wx">';
+  WX.forEach(function(w){
+    h+='<div class="wxc"><div class="d">'+w.day+' · '+w.date+'</div>'+
+       '<div class="tmp">'+w.hi+'°</div><div class="lo">Low '+w.lo+'°</div>'+
+       '<div class="rain"><b>'+w.rain+'%</b> chance of rain</div></div>';
+  });
+  h+='</div>';
+  h+='<div class="callout"><h3>What this changes</h3><ul>'+
+     '<li>Rain is likely both days and you are in general admission — no cover, and umbrellas are not allowed in.</li>'+
+     '<li>Saturday tops out at 73°. Sitting still and wet for five hours will feel cold, especially for James.</li>'+
+     '<li>Shoes soaked Saturday will still be wet Sunday morning. Bring a second pair each.</li>'+
+     '<li>Sunday is warmer at 80° and still wet, so it will feel muggy rather than cold.</li>'+
+     '<li>Skip the jeans. Quick-dry shorts or pants dry between the games.</li>'+
+     '<li>Rain rarely stops a game — lightning does. A delay is more likely than a cancellation.</li>'+
+     '</ul></div>'+
+     '<div class="btns">'+
+     '<a class="btn" href="https://forecast.weather.gov/MapClick.php?lat=39.9852&lon=-82.9848" target="_blank" rel="noopener">Live forecast</a>'+
+     '<a class="btn" href="https://radar.weather.gov/station/kiln/standard" target="_blank" rel="noopener">Radar</a></div>';
+  return h;
+}
+
+function gatePage(){
+  return '<div class="rows">'+
+   '<div class="rw"><span class="k">Bags</span><span class="v"><b>One clear bag, 12" x 6" x 12" max</b><span>A small clutch is usually fine alongside it</span></span></div>'+
+   '<div class="rw"><span class="k">Banned</span><span class="v"><b class="no">Umbrellas</b><span>Leave it in the car for the parking lot</span></span></div>'+
+   '<div class="rw"><span class="k">Banned</span><span class="v"><b class="no">Backpacks</b></span></div>'+
+   '<div class="rw"><span class="k">Banned</span><span class="v"><b class="no">Outside food and drink</b><span>Keep the cooler in the car</span></span></div>'+
+   '<div class="rw"><span class="k">Tickets</span><span class="v"><b>Mobile only</b><span>Load both days into your phone before you go — PLL account 1471854</span></span></div>'+
+   '<div class="rw"><span class="k">Confirm</span><span class="v"><b>Sealed water bottle, folding chairs, small fans</b><span>These vary by venue — check the Ohio State Lacrosse Stadium page</span></span></div>'+
+  '</div>';
+}
+
+function schedulePage(){
+  return '<div class="rows">'+
+   '<div class="rw"><span class="k">Sat</span><span class="v"><b>Drive to Columbus</b><span>About 3 hours from Indy — leave early enough for a 12:30 gate</span></span></div>'+
+   '<div class="rw"><span class="k">12:30</span><span class="v"><b>Meet the players</b><span>Your seat GA1, 23 — same slot as the first game, so head there first</span></span></div>'+
+   '<div class="rw"><span class="k">12:30</span><span class="v"><b>Outlaws vs Whipsnakes</b></span></div>'+
+   '<div class="rw"><span class="k">3:00</span><span class="v"><b>Chaos vs Waterdogs</b></span></div>'+
+   '<div class="rw"><span class="k">3:00</span><span class="v"><b>Hotel check-in opens</b><span>The Blackwell — check in after the games, or drop bags between them</span></span></div>'+
+   '<div class="rw"><span class="k">Sun</span><span class="v"><b>Check out by noon</b><span>Load the car before the noon event so you are not driving back</span></span></div>'+
+   '<div class="rw"><span class="k">12:00</span><span class="v"><b>Stars &amp; Stripes Classic</b></span></div>'+
+   '<div class="rw"><span class="k">3:00</span><span class="v"><b>Atlas vs Redwoods</b></span></div>'+
+   '<div class="rw"><span class="k">3:00</span><span class="v"><b>Meet the players</b><span>Your seat GA1, 9</span></span></div>'+
+  '</div>';
+}
+
+function render(){
+  var id=(location.hash||"").replace("#","");
+  var p=PAGES.filter(function(x){return x.id===id;})[0]||PAGES[0];
+  current=p.id;
+  var v=document.getElementById("view");
+  v.style.setProperty("--accent",p.group.accent);
+  v.style.setProperty("--accent2",p.group.accent2);
+
+  var body="", meta="";
+  if(p.type==="weather") body=weatherPage();
+  else if(p.type==="gate") body=gatePage();
+  else if(p.type==="schedule") body=schedulePage();
+  else{
+    body=checklist(p);
+    var n=itemsOf(p).length,d=doneCount(p);
+    meta='<div class="pbar"><i style="width:'+(n?(d/n*100):0)+'%"></i></div>'+
+         '<div class="pmeta">'+d+' of '+n+' packed</div>';
+  }
+  v.innerHTML='<div class="phead"><div class="eye">'+p.group.name+'</div><h1>'+p.title+'</h1>'+meta+'</div>'+body;
+
+  Array.prototype.forEach.call(v.querySelectorAll(".it"),function(btn){
+    btn.onclick=function(){
+      var k=keyOf(p,btn.getAttribute("data-i"));
+      if(store[k]) delete store[k]; else store[k]=1;
+      save(); render();
+    };
+  });
+  buildNav();
+}
+
+function openNav(){ document.getElementById("nav").classList.add("open"); document.getElementById("scrim").classList.add("on"); }
+function closeNav(){ document.getElementById("nav").classList.remove("open"); document.getElementById("scrim").classList.remove("on"); }
+document.getElementById("burger").onclick=function(){
+  var nav=document.getElementById("nav");
+  if(window.innerWidth<=900){ nav.classList.contains("open")?closeNav():openNav(); }
+  else{ nav.classList.toggle("closed"); document.getElementById("main").classList.toggle("wide"); }
+};
+document.getElementById("scrim").onclick=closeNav;
+window.addEventListener("hashchange",render);
+render();
+</script>
+</body>
+</html>
